@@ -99,10 +99,20 @@ namespace TriAxis.RunSharp
 
 		#region Custom Attributes
 
+		public PropertyGen Attribute<AT>() where AT : Attribute
+		{
+			return Attribute(typeof(AT));
+		}
+
 		public PropertyGen Attribute(AttributeType type)
 		{
 			BeginAttribute(type);
 			return this;
+		}
+
+		public PropertyGen Attribute<AT>(params object[] args) where AT : Attribute
+		{
+			return Attribute(typeof(AT), args);
 		}
 
 		public PropertyGen Attribute(AttributeType type, params object[] args)
@@ -111,9 +121,19 @@ namespace TriAxis.RunSharp
 			return this;
 		}
 
+		public AttributeGen<PropertyGen> BeginAttribute<AT>() where AT : Attribute
+		{
+			return BeginAttribute(typeof(AT));
+		}
+
 		public AttributeGen<PropertyGen> BeginAttribute(AttributeType type)
 		{
 			return BeginAttribute(type, EmptyArray<object>.Instance);
+		}
+
+		public AttributeGen<PropertyGen> BeginAttribute<AT>(params object[] args) where AT : Attribute
+		{
+			return BeginAttribute(typeof(AT), args);
 		}
 
 		public AttributeGen<PropertyGen> BeginAttribute(AttributeType type, params object[] args)
@@ -129,6 +149,11 @@ namespace TriAxis.RunSharp
 			ParameterGen pgen = new ParameterGen(indexParameters, indexParameters.Count + 1, type, 0, name, false);
 			indexParameters.Add(pgen);
 			return pgen;
+		}
+
+		public PropertyGen Index<T>(string name)
+		{
+			return Index(typeof(T), name);
 		}
 
 		public PropertyGen Index(Type type, string name)

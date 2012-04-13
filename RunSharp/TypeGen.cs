@@ -257,10 +257,20 @@ namespace TriAxis.RunSharp
 
 		#region Custom Attributes
 
+		public TypeGen Attribute<AT>() where AT : Attribute
+		{
+			return Attribute(typeof(AT));
+		}
+
 		public TypeGen Attribute(AttributeType type)
 		{
 			BeginAttribute(type);
 			return this;
+		}
+
+		public TypeGen Attribute<AT>(params object[] args) where AT : Attribute
+		{
+			return Attribute(typeof(AT), args);
 		}
 
 		public TypeGen Attribute(AttributeType type, params object[] args)
@@ -269,9 +279,19 @@ namespace TriAxis.RunSharp
 			return this;
 		}
 
+		public AttributeGen<TypeGen> BeginAttribute<AT>() where AT : Attribute
+		{
+			return BeginAttribute(typeof(AT));
+		}
+
 		public AttributeGen<TypeGen> BeginAttribute(AttributeType type)
 		{
 			return BeginAttribute(type, EmptyArray<object>.Instance);
+		}
+
+		public AttributeGen<TypeGen> BeginAttribute<AT>(params object[] args) where AT : Attribute
+		{
+			return BeginAttribute(typeof(AT), args);
 		}
 
 		public AttributeGen<TypeGen> BeginAttribute(AttributeType type, params object[] args)
@@ -329,6 +349,11 @@ namespace TriAxis.RunSharp
 			return staticCtor;
 		}
 
+		public FieldGen Field<T>(string name)
+		{
+			return Field(typeof(T), name);
+		}
+
 		public FieldGen Field(Type type, string name)
 		{
 			if (tb.IsInterface)
@@ -343,6 +368,11 @@ namespace TriAxis.RunSharp
 			return fld;
 		}
 
+		public FieldGen Field<T>(string name, Operand initialValue)
+		{
+			return Field(typeof(T), name, initialValue);
+		}
+
 		public FieldGen Field(Type type, string name, Operand initialValue)
 		{
 			FieldGen fld = Field(type, name);
@@ -350,6 +380,11 @@ namespace TriAxis.RunSharp
 			CodeGen initCode = fld.IsStatic ? StaticConstructor().GetCode(): CommonConstructor().GetCode();
 			initCode.Assign(fld, initialValue);
 			return fld;
+		}
+
+		public PropertyGen Property<T>(string name)
+		{
+			return Property(typeof(T), name);
 		}
 
 		public PropertyGen Property(Type type, string name)
@@ -367,9 +402,19 @@ namespace TriAxis.RunSharp
 			return pg;
 		}
 
+		public PropertyGen Indexer<T>()
+		{
+			return Indexer(typeof(T));
+		}
+
 		public PropertyGen Indexer(Type type)
 		{
 			return Indexer(type, "Item");
+		}
+
+		public PropertyGen Indexer<T>(string name)
+		{
+			return Indexer(typeof(T), name);
 		}
 
 		public PropertyGen Indexer(Type type, string name)
@@ -408,6 +453,16 @@ namespace TriAxis.RunSharp
 			return eg;
 		}
 
+		public MethodGen Void(string name)
+		{
+			return Method(typeof(void), name);
+		}
+
+		public MethodGen Method<T>(string name)
+		{
+			return Method(typeof(T), name);
+		}
+
 		public MethodGen Method(Type returnType, string name)
 		{
 			if (mthVis == 0)
@@ -420,9 +475,19 @@ namespace TriAxis.RunSharp
 			return mg;
 		}
 
+		public MethodGen ImplicitConversionFrom<T>()
+		{
+			return ImplicitConversionFrom(typeof(T));
+		}
+
 		public MethodGen ImplicitConversionFrom(Type fromType)
 		{
 			return ImplicitConversionFrom(fromType, "value");
+		}
+
+		public MethodGen ImplicitConversionFrom<T>(string parameterName)
+		{
+			return ImplicitConversionFrom(typeof(T), parameterName);
 		}
 
 		public MethodGen ImplicitConversionFrom(Type fromType, string parameterName)
@@ -436,9 +501,19 @@ namespace TriAxis.RunSharp
 			return Method(tb, "op_Implicit").Parameter(fromType, parameterName);
 		}
 
+		public MethodGen ImplicitConversionTo<T>()
+		{
+			return ImplicitConversionTo(typeof(T));
+		}
+
 		public MethodGen ImplicitConversionTo(Type toType)
 		{
 			return ImplicitConversionTo(toType, "value");
+		}
+
+		public MethodGen ImplicitConversionTo<T>(string parameterName)
+		{
+			return ImplicitConversionTo(typeof(T), parameterName);
 		}
 
 		public MethodGen ImplicitConversionTo(Type toType, string parameterName)
@@ -452,9 +527,19 @@ namespace TriAxis.RunSharp
 			return Method(toType, "op_Implicit").Parameter(tb, parameterName);
 		}
 
+		public MethodGen ExplicitConversionFrom<T>()
+		{
+			return ExplicitConversionFrom(typeof(T));
+		}
+
 		public MethodGen ExplicitConversionFrom(Type fromType)
 		{
 			return ExplicitConversionFrom(fromType, "value");
+		}
+
+		public MethodGen ExplicitConversionFrom<T>(string parameterName)
+		{
+			return ExplicitConversionFrom(typeof(T), parameterName);
 		}
 
 		public MethodGen ExplicitConversionFrom(Type fromType, string parameterName)
@@ -468,9 +553,19 @@ namespace TriAxis.RunSharp
 			return Method(tb, "op_Explicit").Parameter(fromType, parameterName);
 		}
 
+		public MethodGen ExplicitConversionTo<T>()
+		{
+			return ExplicitConversionTo(typeof(T));
+		}
+
 		public MethodGen ExplicitConversionTo(Type toType)
 		{
 			return ExplicitConversionTo(toType, "value");
+		}
+
+		public MethodGen ExplicitConversionTo<T>(string parameterName)
+		{
+			return ExplicitConversionTo(typeof(T), parameterName);
 		}
 
 		public MethodGen ExplicitConversionTo(Type toType, string parameterName)
@@ -574,6 +669,16 @@ namespace TriAxis.RunSharp
 			}
 		}
 
+		public MethodGen MethodImplementation<TInterface>(Type returnType, string name)
+		{
+			return MethodImplementation(typeof(TInterface), returnType, name);
+		}
+
+		public MethodGen MethodImplementation<TInterface, TReturnType>(string name)
+		{
+			return MethodImplementation(typeof(TInterface), typeof(TReturnType), name);
+		}
+
 		public MethodGen MethodImplementation(Type interfaceType, Type returnType, string name)
 		{
 			if (tb.IsInterface)
@@ -584,6 +689,16 @@ namespace TriAxis.RunSharp
 				returnType, 0);
 			mg.ImplementedInterface = interfaceType;
 			return mg;
+		}
+
+		public PropertyGen PropertyImplementation<TInterface>(Type type, string name)
+		{
+			return PropertyImplementation(typeof(TInterface), type, name);
+		}
+
+		public PropertyGen PropertyImplementation<TInterface, TType>(string name)
+		{
+			return PropertyImplementation(typeof(TInterface), typeof(TType), name);
 		}
 
 		public PropertyGen PropertyImplementation(Type interfaceType, Type type, string name)

@@ -33,7 +33,12 @@ namespace TriAxis.RunSharp
 	{
 		Attributes attrs;
 		DynamicMethod dm;
-		
+
+		public static Attributes Static<TOwner>()
+		{
+			return Static(typeof(TOwner));
+		}
+
 		public static Attributes Static(Type owner)
 		{
 			return new Attributes(owner, false);
@@ -76,6 +81,16 @@ namespace TriAxis.RunSharp
 			{
 				this.name = name;
 				return this;
+			}
+
+			public DynamicMethodGen Void()
+			{
+				return Method(typeof(void));
+			}
+
+			public DynamicMethodGen Method<T>()
+			{
+				return Method(typeof(T));
 			}
 
 			public DynamicMethodGen Method(Type returnType)
@@ -182,5 +197,13 @@ namespace TriAxis.RunSharp
 		}
 
 		#endregion
+	}
+
+	public static class DynamicMethodExtensions
+	{
+		public static T CreateDelegate<T>(this DynamicMethod dm)
+		{
+			return (T)(object)dm.CreateDelegate(typeof(T));
+		}
 	}
 }

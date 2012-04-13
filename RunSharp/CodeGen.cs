@@ -133,9 +133,19 @@ namespace TriAxis.RunSharp
 			return var;
 		}
 
+		public Operand Local<T>()
+		{
+			return Local(typeof(T));
+		}
+
 		public Operand Local(Type type)
 		{
 			return new _Local(this, type);
+		}
+
+		public Operand Local<T>(Operand init)
+		{
+			return Local(typeof(T), init);
 		}
 
 		public Operand Local(Type type, Operand init)

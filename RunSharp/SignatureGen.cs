@@ -112,6 +112,16 @@ namespace TriAxis.RunSharp
 			return typedThis;
 		}
 
+		public T Parameter(string name)
+		{
+ 			return Parameter(typeof(object), name);
+		}
+
+		public T Parameter<TParam>(string name)
+		{
+			return Parameter(typeof(TParam), name);
+		}
+
 		public T Parameter(Type type, string name)
 		{
 			BeginParameter(type, name);

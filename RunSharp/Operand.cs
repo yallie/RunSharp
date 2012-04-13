@@ -607,6 +607,11 @@ namespace TriAxis.RunSharp
 			return new Conditional(Type == typeof(bool) ? this : IsTrue(), ifTrue, ifFalse);
 		}
 
+		public Operand Cast<T>()
+		{
+			return Cast(typeof(T));
+		}
+
 		public Operand Cast(Type type)
 		{
 			return new Cast(this, type);

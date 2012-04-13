@@ -34,9 +34,19 @@ namespace TriAxis.RunSharp
 	{
 		#region Construction expressions
 
+		public static Operand New<T>()
+		{
+			return New(typeof(T));
+		}
+
 		public static Operand New(Type type)
 		{
 			return New(type, Operand.EmptyArray);
+		}
+
+		public static Operand New<T>(params Operand[] args)
+		{
+			return New(typeof(T), args);
 		}
 
 		public static Operand New(Type type, params Operand[] args)
@@ -49,9 +59,19 @@ namespace TriAxis.RunSharp
 			return new NewObject(ctor, args);
 		}
 
+		public static Operand NewArray<T>(params Operand[] indexes)
+		{
+			return NewArray(typeof(T), indexes);
+		}
+
 		public static Operand NewArray(Type type, params Operand[] indexes)
 		{
 			return new NewArray(type, indexes);
+		}
+
+		public static Operand NewInitializedArray<T>(params Operand[] elements)
+		{
+			return NewInitializedArray(typeof(T), elements);
 		}
 
 		public static Operand NewInitializedArray(Type type, params Operand[] elements)
@@ -59,9 +79,19 @@ namespace TriAxis.RunSharp
 			return new InitializedArray(type, elements);
 		}
 
+		public static Operand NewDelegate<T>(Type target, string method)
+		{
+			return NewDelegate(typeof(T), target, method);
+		}
+
 		public static Operand NewDelegate(Type delegateType, Type target, string method)
 		{
 			return new NewDelegate(delegateType, target, method);
+		}
+
+		public static Operand NewDelegate<T>(Operand target, string method)
+		{
+			return NewDelegate(typeof(T), target, method);
 		}
 
 		public static Operand NewDelegate(Type delegateType, Operand target, string method)

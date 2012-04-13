@@ -233,9 +233,19 @@ namespace TriAxis.RunSharp
 		}
 
 		#region Invocation
+		public void Invoke<T>(string method)
+		{
+			Invoke(typeof(T), method);
+		}
+
 		public void Invoke(Type target, string method)
 		{
 			Invoke(target, method, Operand.EmptyArray);
+		}
+
+		public void Invoke<T>(string method, params Operand[] args)
+		{
+			Invoke(typeof(T), method, args);
 		}
 
 		public void Invoke(Type target, string method, params Operand[] args)
@@ -472,6 +482,11 @@ namespace TriAxis.RunSharp
 		public void While(Operand test)
 		{
 			Begin(new LoopBlock(null, test, null));
+		}
+
+		public Operand ForEach<T>(Operand expression)
+		{
+			return ForEach(typeof(T), expression);
 		}
 
 		public Operand ForEach(Type elementType, Operand expression)

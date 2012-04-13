@@ -34,9 +34,19 @@ namespace TriAxis.RunSharp
 	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "There is no better name for this.")]
 	public static class Static
 	{
+		public static Operand Field<T>(string name)
+		{
+			return Field(typeof(T), name);
+		}
+
 		public static Operand Field(Type type, string name)
 		{
 			return new Field((FieldInfo)TypeInfo.FindField(type, name, true).Member, null);
+		}
+
+		public static Operand Property<T>(string name)
+		{
+			return Property(typeof(T), name);
 		}
 
 		public static Operand Property(Type type, string name)
@@ -44,14 +54,29 @@ namespace TriAxis.RunSharp
 			return Property(type, name, Operand.EmptyArray);
 		}
 
+		public static Operand Property<T>(string name, params Operand[] indexes)
+		{
+			return Property(typeof(T), name, indexes);
+		}
+
 		public static Operand Property(Type type, string name, params Operand[] indexes)
 		{
 			return new Property(TypeInfo.FindProperty(type, name, indexes, true), null, indexes);
 		}
 
+		public static Operand Invoke<T>(string name)
+		{
+			return Invoke(typeof(T), name);
+		}
+
 		public static Operand Invoke(Type type, string name)
 		{
 			return Invoke(type, name, Operand.EmptyArray);
+		}
+
+		public static Operand Invoke<T>(string name, params Operand[] args)
+		{
+			return Invoke(typeof(T), name, args);
 		}
 
 		public static Operand Invoke(Type type, string name, params Operand[] args)

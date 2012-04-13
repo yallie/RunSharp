@@ -57,10 +57,20 @@ namespace TriAxis.RunSharp
 
 		#region Custom Attributes
 
+		public ParameterGen Attribute<AT>() where AT : Attribute
+		{
+			return Attribute(typeof(AT));
+		}
+
 		public ParameterGen Attribute(AttributeType type)
 		{
 			BeginAttribute(type);
 			return this;
+		}
+
+		public ParameterGen Attribute<AT>(params object[] args) where AT : Attribute
+		{
+			return Attribute(typeof(AT), args);
 		}
 
 		public ParameterGen Attribute(AttributeType type, params object[] args)
@@ -69,9 +79,19 @@ namespace TriAxis.RunSharp
 			return this;
 		}
 
+		public AttributeGen<ParameterGen> BeginAttribute<AT>() where AT : Attribute
+		{
+			return BeginAttribute(typeof(AT));
+		}
+
 		public AttributeGen<ParameterGen> BeginAttribute(AttributeType type)
 		{
 			return BeginAttribute(type, EmptyArray<object>.Instance);
+		}
+
+		public AttributeGen<ParameterGen> BeginAttribute<AT>(params object[] args) where AT : Attribute
+		{
+			return BeginAttribute(typeof(AT), args);
 		}
 
 		public AttributeGen<ParameterGen> BeginAttribute(AttributeType type, params object[] args)

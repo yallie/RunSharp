@@ -186,6 +186,16 @@ namespace TriAxis.RunSharp
 			return tg;
 		}
 
+		public DelegateGen DelegateVoid(string name)
+		{
+			return Delegate(typeof(void), name);
+		}
+
+		public DelegateGen Delegate<T>(string name)
+		{
+			return Delegate(typeof(T), name);
+		}
+
 		public DelegateGen Delegate(Type returnType, string name)
 		{
 			return new DelegateGen(this, Qualify(name), returnType, (attrs | TypeAttributes.Sealed) & ~(TypeAttributes.Abstract | TypeAttributes.BeforeFieldInit));
