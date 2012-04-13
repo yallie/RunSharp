@@ -116,8 +116,9 @@ namespace TriAxis.RunSharp
 				gen(asm);
 				if (!noexe)	asm.Save();
 				Console.WriteLine("=== RUN {0}", testName);
-                try
-                {
+
+				try
+				{
 					if (noexe)
 					{
 						Type entryType = asm.GetAssembly().EntryPoint.DeclaringType;
@@ -135,11 +136,11 @@ namespace TriAxis.RunSharp
 							GetTestArguments(gen));
 					}
 				}
-                catch (Exception e)
-                {
-                    Console.WriteLine("!!! UNHANDLED EXCEPTION");
-                    Console.WriteLine(e);
-                }
+				catch (Exception e)
+				{
+					Console.WriteLine("!!! UNHANDLED EXCEPTION");
+					Console.WriteLine(e);
+				}
 				Console.WriteLine("<<< END {0}", testName);
 				Console.WriteLine();
 			}
@@ -151,11 +152,11 @@ namespace TriAxis.RunSharp
 		#region Dynamic Method examples
 		static void DynamicMethodExamples()
 		{
-			DynamicMethodGen dmg = DynamicMethodGen.Static(typeof(Program)).Method(typeof(void)).Parameter(typeof(string), "name");
+			DynamicMethodGen dmg = DynamicMethodGen.Static<Program>().Void().Parameter<string>("name");
 			CodeGen g = dmg.GetCode();
 			g.Try();
 			{
-				Operand name = g.Local(typeof(string), g.Arg("name"));
+				Operand name = g.Local<string>(g.Arg("name"));
 				g.WriteLine("Hello {0}!", name);
 			}
 			g.CatchAll();
@@ -170,7 +171,7 @@ namespace TriAxis.RunSharp
 			dm.Invoke(null, new object[] { "Dynamic Method" });
 
 			// delegate invocation
-			Action<string> hello = (Action<string>)dm.CreateDelegate(typeof(Action<string>));
+			var hello = dm.CreateDelegate<Action<string>>();
 			hello("Delegate");
 		}
 		#endregion

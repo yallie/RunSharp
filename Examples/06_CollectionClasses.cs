@@ -35,12 +35,11 @@ namespace TriAxis.RunSharp.Examples
 		{
 			TypeGen Tokens = ag.Public.Class("Tokens", typeof(object), typeof(IEnumerable));
 			{
-				FieldGen elements = Tokens.Private.Field(typeof(string[]), "elements");
+				FieldGen elements = Tokens.Private.Field<string[]>("elements");
 
 				CodeGen g = Tokens.Constructor()
-					.Parameter(typeof(string), "source")
-					.Parameter(typeof(char[]), "delimiters")
-					;
+					.Parameter<string>("source")
+					.Parameter<char[]>("delimiters");
 				{
 					g.Assign(elements, g.Arg("source").Invoke("Split", g.Arg("delimiters")));
 				}
@@ -49,7 +48,7 @@ namespace TriAxis.RunSharp.Examples
 
 				TypeGen TokenEnumerator = Tokens.Public.Class("TokenEnumerator", typeof(object), typeof(IEnumerator));
 				{
-					FieldGen position = TokenEnumerator.Field(typeof(int), "position", -1);
+					FieldGen position = TokenEnumerator.Field<int>("position", -1);
 					FieldGen t = TokenEnumerator.Field(Tokens, "t");
 
 					g = TokenEnumerator.Public.Constructor().Parameter(Tokens, "tokens");
@@ -57,7 +56,7 @@ namespace TriAxis.RunSharp.Examples
 						g.Assign(t, g.Arg("tokens"));
 					}
 
-					g = TokenEnumerator.Public.Method(typeof(bool), "MoveNext");
+					g = TokenEnumerator.Public.Method<bool>("MoveNext");
 					{
 						g.If(position < t.Field("elements").ArrayLength() - 1);
 						{
@@ -71,19 +70,19 @@ namespace TriAxis.RunSharp.Examples
 						g.End();
 					}
 
-					g = TokenEnumerator.Public.Method(typeof(void), "Reset");
+					g = TokenEnumerator.Public.Void("Reset");
 					{
 						g.Assign(position, -1);
 					}
 
 					// non-IEnumerator version: type-safe
-					g = TokenEnumerator.Public.Property(typeof(string), "Current").Getter();
+					g = TokenEnumerator.Public.Property<string>("Current").Getter();
 					{
 						g.Return(t.Field("elements")[position]);
 					}
 
 					// IEnumerator version: returns object
-					g = TokenEnumerator.Public.PropertyImplementation(typeof(IEnumerator), typeof(object), "Current").Getter();
+					g = TokenEnumerator.Public.PropertyImplementation<IEnumerator, object>("Current").Getter();
 					{
 						g.Return(t.Field("elements")[position]);
 					}
@@ -98,18 +97,19 @@ namespace TriAxis.RunSharp.Examples
 				}
 
 				// IEnumerable version
-				g = Tokens.Public.MethodImplementation(typeof(IEnumerable), typeof(IEnumerator), "GetEnumerator");
+				g = Tokens.Public.MethodImplementation<IEnumerable, IEnumerator>("GetEnumerator");
 				{
-					g.Return(Exp.New(TokenEnumerator, g.This()).Cast(typeof(IEnumerator)));
+					g.Return(Exp.New(TokenEnumerator, g.This()).Cast<IEnumerator>());
 				}
 
 				// Test Tokens, TokenEnumerator
 
-				g = Tokens.Static.Method(typeof(void), "Main");
+				g = Tokens.Static.Void("Main");
 				{
 					Operand f = g.Local(Exp.New(Tokens, "This is a well-done program.",
-						Exp.NewInitializedArray(typeof(char), ' ', '-')));
-					Operand item = g.ForEach(typeof(string), f);	// try changing string to int
+						Exp.NewInitializedArray<char>(' ', '-')));
+
+					Operand item = g.ForEach<string>(f);	// try changing string to int
 					{
 						g.WriteLine(item);
 					}

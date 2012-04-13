@@ -35,8 +35,8 @@ namespace TriAxis.RunSharp.Examples
 		{
 			TypeGen Person = ag.Class("Person");
 			{
-				FieldGen myName = Person.Private.Field(typeof(string), "myName", "N/A");
-				FieldGen myAge = Person.Private.Field(typeof(int), "myAge", 0);
+				FieldGen myName = Person.Private.Field<string>("myName", "N/A");
+				FieldGen myAge = Person.Private.Field<int>("myAge", 0);
 
 				// Declare a Name property of type string:
 				PropertyGen Name = Person.Public.SimpleProperty(myName, "Name");
@@ -44,12 +44,12 @@ namespace TriAxis.RunSharp.Examples
 				// Declare an Age property of type int:
 				PropertyGen Age = Person.Public.SimpleProperty(myAge, "Age");
 
-				CodeGen g = Person.Public.Override.Method(typeof(string), "ToString");
+				CodeGen g = Person.Public.Override.Method<string>("ToString");
 				{
 					g.Return("Name = " + Name + ", Age = " + Age);
 				}
 
-				g = Person.Public.Static.Method(typeof(void), "Main");
+				g = Person.Public.Static.Void("Main");
 				{
 					g.WriteLine("Simple Properties");
 
@@ -77,37 +77,37 @@ namespace TriAxis.RunSharp.Examples
 			// abstractshape.cs
 			TypeGen Shape = ag.Public.Abstract.Class("Shape");
 			{
-				FieldGen myId = Shape.Private.Field(typeof(string), "myId");
+				FieldGen myId = Shape.Private.Field<string>("myId");
 
 				PropertyGen Id = Shape.Public.SimpleProperty(myId, "Id");
 
-				CodeGen g = Shape.Public.Constructor().Parameter(typeof(string), "s");
+				CodeGen g = Shape.Public.Constructor().Parameter<string>("s");
 				{
 					g.Assign(Id, g.Arg("s"));	// calling the set accessor of the Id property
 				}
 
 				// Area is a read-only property - only a get accessor is needed:
-				PropertyGen Area = Shape.Public.Abstract.Property(typeof(double), "Area");
+				PropertyGen Area = Shape.Public.Abstract.Property<double>("Area");
 				Area.Getter();
 
-				g = Shape.Public.Override.Method(typeof(string), "ToString");
+				g = Shape.Public.Override.Method<string>("ToString");
 				{
-					g.Return(Id + " Area = " + Static.Invoke(typeof(string), "Format", "{0:F2}", Area));
+					g.Return(Id + " Area = " + Static.Invoke<string>("Format", "{0:F2}", Area));
 				}
 			}
 
 			// shapes.cs
 			TypeGen Square = ag.Public.Class("Square", Shape);
 			{
-				FieldGen mySide = Square.Private.Field(typeof(int), "mySide");
+				FieldGen mySide = Square.Private.Field<int>("mySide");
 
-				CodeGen g = Square.Public.Constructor().Parameter(typeof(int), "side").Parameter(typeof(string), "id");
+				CodeGen g = Square.Public.Constructor().Parameter<int>("side").Parameter<string>("id");
 				{
 					g.InvokeBase(g.Arg("id"));
 					g.Assign(mySide, g.Arg("side"));
 				}
 
-				PropertyGen Area = Square.Public.Override.Property(typeof(double), "Area");
+				PropertyGen Area = Square.Public.Override.Property<double>("Area");
 				g = Area.Getter();
 				{
 					// Given the side, return the area of a square:
@@ -117,15 +117,15 @@ namespace TriAxis.RunSharp.Examples
 
 			TypeGen Circle = ag.Public.Class("Circle", Shape);
 			{
-				FieldGen myRadius = Circle.Private.Field(typeof(int), "myRadius");
+				FieldGen myRadius = Circle.Private.Field<int>("myRadius");
 
-				CodeGen g = Circle.Public.Constructor().Parameter(typeof(int), "radius").Parameter(typeof(string), "id");
+				CodeGen g = Circle.Public.Constructor().Parameter<int>("radius").Parameter<string>("id");
 				{
 					g.InvokeBase(g.Arg("id"));
 					g.Assign(myRadius, g.Arg("radius"));
 				}
 
-				PropertyGen Area = Circle.Public.Override.Property(typeof(double), "Area");
+				PropertyGen Area = Circle.Public.Override.Property<double>("Area");
 				g = Area.Getter();
 				{
 					// Given the radius, return the area of a circle:
@@ -135,21 +135,20 @@ namespace TriAxis.RunSharp.Examples
 
 			TypeGen Rectangle = ag.Public.Class("Rectangle", Shape);
 			{
-				FieldGen myWidth = Rectangle.Private.Field(typeof(int), "myWidth");
-				FieldGen myHeight = Rectangle.Private.Field(typeof(int), "myHeight");
+				FieldGen myWidth = Rectangle.Private.Field<int>("myWidth");
+				FieldGen myHeight = Rectangle.Private.Field<int>("myHeight");
 
 				CodeGen g = Rectangle.Public.Constructor()
-					.Parameter(typeof(int), "width")
-					.Parameter(typeof(int), "height")
-					.Parameter(typeof(string), "id")
-					;
+					.Parameter<int>("width")
+					.Parameter<int>("height")
+					.Parameter<string>("id");
 				{
 					g.InvokeBase(g.Arg("id"));
 					g.Assign(myWidth, g.Arg("width"));
 					g.Assign(myHeight, g.Arg("height"));
 				}
 
-				PropertyGen Area = Rectangle.Public.Override.Property(typeof(double), "Area");
+				PropertyGen Area = Rectangle.Public.Override.Property<double>("Area");
 				g = Area.Getter();
 				{
 					// Given the width and height, return the area of a rectangle:
@@ -160,7 +159,7 @@ namespace TriAxis.RunSharp.Examples
 			// shapetest.cs
 			TypeGen TestClass = ag.Public.Class("TestClass");
 			{
-				CodeGen g = TestClass.Public.Static.Method(typeof(void), "Main");
+				CodeGen g = TestClass.Public.Static.Void("Main");
 				{
 					Operand shapes = g.Local(Exp.NewInitializedArray(Shape,
 						Exp.New(Square, 5, "Square #1"),

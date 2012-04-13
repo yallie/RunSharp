@@ -36,12 +36,13 @@ namespace TriAxis.RunSharp.Examples
 		{
 			TypeGen CommandLine2 = ag.Public.Class("CommandLine2");
 			{
-				CodeGen g = CommandLine2.Public.Static.Method(typeof(void), "Main").Parameter(typeof(string[]), "args");
+				CodeGen g = CommandLine2.Public.Static.Void("Main").Parameter<string[]>("args");
 				{
 					Operand args = g.Arg("args");
 					g.WriteLine("Number of command line parameters = {0}",
 						args.Property("Length"));
-					Operand s = g.ForEach(typeof(string), args);
+
+					Operand s = g.ForEach<string>(args);
 					{
 						g.WriteLine(s);
 					}

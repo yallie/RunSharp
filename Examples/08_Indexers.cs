@@ -39,30 +39,30 @@ namespace TriAxis.RunSharp.Examples
 			// as if it were a byte array.
 			TypeGen FileByteArray = ag.Public.Class("FileByteArray");
 			{
-				FieldGen stream = FileByteArray.Field(typeof(Stream), "stream");	// Holds the underlying stream
+				FieldGen stream = FileByteArray.Field<Stream>("stream");	// Holds the underlying stream
 				// used to access the file.
 
 				// Create a new FileByteArray encapsulating a particular file.
-				CodeGen g = FileByteArray.Public.Constructor().Parameter(typeof(string), "fileName");
+				CodeGen g = FileByteArray.Public.Constructor().Parameter<string>("fileName");
 				{
-					g.Assign(stream, Exp.New(typeof(FileStream), g.Arg("fileName"), FileMode.Open));
+					g.Assign(stream, Exp.New<FileStream>(g.Arg("fileName"), FileMode.Open));
 				}
 
 				// Close the stream. This should be the last thing done
 				// when you are finished.
-				g = FileByteArray.Public.Method(typeof(void), "Close");
+				g = FileByteArray.Public.Void("Close");
 				{
 					g.Invoke(stream, "Close");
 					g.Assign(stream, null);
 				}
 
 				// Indexer to provide read/write access to the file.
-				PropertyGen Item = FileByteArray.Public.Indexer(typeof(byte)).Index(typeof(long), "index");	// long is a 64-bit integer
+				PropertyGen Item = FileByteArray.Public.Indexer<byte>().Index<long>("index");	// long is a 64-bit integer
 				{
 					// Read one byte at offset index and return it.
 					g = Item.Getter();
 					{
-						Operand buffer = g.Local(Exp.NewArray(typeof(byte), 1));
+						Operand buffer = g.Local(Exp.NewArray<byte>(1));
 						g.Invoke(stream, "Seek", g.Arg("index"), SeekOrigin.Begin);
 						g.Invoke(stream, "Read", buffer, 0, 1);
 						g.Return(buffer[0]);
@@ -70,14 +70,14 @@ namespace TriAxis.RunSharp.Examples
 					// Write one byte at offset index and return it.
 					g = Item.Setter();
 					{
-						Operand buffer = g.Local(Exp.NewInitializedArray(typeof(byte), g.PropertyValue()));
+						Operand buffer = g.Local(Exp.NewInitializedArray<byte>(g.PropertyValue()));
 						g.Invoke(stream, "Seek", g.Arg("index"), SeekOrigin.Begin);
 						g.Invoke(stream, "Write", buffer, 0, 1);
 					}
 				}
 
 				// Get the total length of the file.
-				FileByteArray.Public.Property(typeof(long), "Length").Getter().GetCode()
+				FileByteArray.Public.Property<long>("Length").Getter().GetCode()
 					.Return(stream.Invoke("Seek", 0, SeekOrigin.End));
 			}
 
@@ -85,7 +85,7 @@ namespace TriAxis.RunSharp.Examples
 			// Reverses the bytes in a file.
 			TypeGen Reverse = ag.Public.Class("Reverse");
 			{
-				CodeGen g = Reverse.Public.Static.Method(typeof(void), "Main").Parameter(typeof(string[]), "args");
+				CodeGen g = Reverse.Public.Static.Void("Main").Parameter<string[]>("args");
 				{
 					Operand args = g.Arg("args");
 
@@ -109,7 +109,7 @@ namespace TriAxis.RunSharp.Examples
 					Operand len = g.Local(file.Property("Length"));
 
 					// Swap bytes in the file to reverse it.
-					Operand i = g.Local(typeof(long));
+					Operand i = g.Local<long>();
 					g.For(i.Assign(0), i < len / 2, i.Increment());
 					{
 						Operand t = g.Local();

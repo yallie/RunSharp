@@ -36,28 +36,27 @@ namespace TriAxis.RunSharp.Examples
 			// Declare the English units interface:
 			TypeGen IEnglishDimensions = ag.Interface("IEnglishDimensions");
 			{
-				IEnglishDimensions.Method(typeof(float), "Length");
-				IEnglishDimensions.Method(typeof(float), "Width");
+				IEnglishDimensions.Method<float>("Length");
+				IEnglishDimensions.Method<float>("Width");
 			}
 
 			// Declare the metric units interface:
 			TypeGen IMetricDimensions = ag.Interface("IMetricDimensions");
 			{
-				IMetricDimensions.Method(typeof(float), "Length");
-				IMetricDimensions.Method(typeof(float), "Width");
+				IMetricDimensions.Method<float>("Length");
+				IMetricDimensions.Method<float>("Width");
 			}
 
 			// Declare the "Box" class that implements the two interfaces:
 			// IEnglishDimensions and IMetricDimensions:
 			TypeGen Box = ag.Class("Box", typeof(object), IEnglishDimensions, IMetricDimensions);
 			{
-				FieldGen lengthInches = Box.Field(typeof(float), "lengthInches");
-				FieldGen widthInches = Box.Field(typeof(float), "widthInches");
+				FieldGen lengthInches = Box.Field<float>("lengthInches");
+				FieldGen widthInches = Box.Field<float>("widthInches");
 
 				CodeGen g = Box.Public.Constructor()
-					.Parameter(typeof(float), "length")
-					.Parameter(typeof(float), "width")
-					;
+					.Parameter<float>("length")
+					.Parameter<float>("width");
 				{
 					g.Assign(lengthInches, g.Arg("length"));
 					g.Assign(widthInches, g.Arg("width"));
@@ -80,7 +79,7 @@ namespace TriAxis.RunSharp.Examples
 				{
 					g.Return(widthInches * 2.54f);
 				}
-				g = Box.Public.Static.Method(typeof(void), "Main");
+				g = Box.Public.Static.Void("Main");
 				{
 					// Declare a class instance "myBox":
 					Operand myBox = g.Local(Exp.New(Box, 30.0f, 20.0f));

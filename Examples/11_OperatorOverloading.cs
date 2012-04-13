@@ -35,13 +35,12 @@ namespace TriAxis.RunSharp.Examples
 		{
 			TypeGen Complex = ag.Public.Struct("Complex");
 			{
-				FieldGen real = Complex.Public.Field(typeof(int), "real");
-				FieldGen imaginary = Complex.Public.Field(typeof(int), "imaginary");
+				FieldGen real = Complex.Public.Field<int>("real");
+				FieldGen imaginary = Complex.Public.Field<int>("imaginary");
 
 				CodeGen g = Complex.Public.Constructor()
-					.Parameter(typeof(int), "real")
-					.Parameter(typeof(int), "imaginary")
-					;
+					.Parameter<int>("real")
+					.Parameter<int>("imaginary");
 				{
 					g.Assign(real, g.Arg("real"));
 					g.Assign(imaginary, g.Arg("imaginary"));
@@ -57,12 +56,12 @@ namespace TriAxis.RunSharp.Examples
 				}
 
 				// Override the ToString method to display an complex number in the suitable format:
-				g = Complex.Public.Override.Method(typeof(string), "ToString");
+				g = Complex.Public.Override.Method<string>("ToString");
 				{
-					g.Return(Static.Invoke(typeof(string), "Format", "{0} + {1}i", real, imaginary));
+					g.Return(Static.Invoke<string>("Format", "{0} + {1}i", real, imaginary));
 				}
 
-				g = Complex.Public.Static.Method(typeof(void), "Main");
+				g = Complex.Public.Static.Void("Main");
 				{
 					Operand num1 = g.Local(Exp.New(Complex, 2, 3));
 					Operand num2 = g.Local(Exp.New(Complex, 3, 4));
@@ -85,10 +84,10 @@ namespace TriAxis.RunSharp.Examples
 			TypeGen DBBool = ag.Public.Struct("DBBool");
 			{
 				// Private field that stores -1, 0, 1 for dbFalse, dbNull, dbTrue:
-				FieldGen value = DBBool.Field(typeof(int), "value");
+				FieldGen value = DBBool.Field<int>("value");
 
 				// Private constructor. The value parameter must be -1, 0, or 1:
-				CodeGen g = DBBool.Constructor().Parameter(typeof(int), "value");
+				CodeGen g = DBBool.Constructor().Parameter<int>("value");
 				{
 					g.Assign(value, g.Arg("value"));
 				}
@@ -100,7 +99,7 @@ namespace TriAxis.RunSharp.Examples
 
 				// Implicit conversion from bool to DBBool. Maps true to 
 				// DBBool.dbTrue and false to DBBool.dbFalse:
-				g = DBBool.ImplicitConversionFrom(typeof(bool), "x");
+				g = DBBool.ImplicitConversionFrom<bool>("x");
 				{
 					Operand x = g.Arg("x");
 					g.Return(x.Conditional(dbTrue, dbFalse));
@@ -109,7 +108,7 @@ namespace TriAxis.RunSharp.Examples
 				// Explicit conversion from DBBool to bool. Throws an 
 				// exception if the given DBBool is dbNull, otherwise returns
 				// true or false:
-				g = DBBool.ExplicitConversionTo(typeof(bool), "x");
+				g = DBBool.ExplicitConversionTo<bool>("x");
 				{
 					Operand x = g.Arg("x");
 					g.If(x.Field("value") == 0);
@@ -201,11 +200,11 @@ namespace TriAxis.RunSharp.Examples
 				}
 
 				// Override the Object.Equals(object o) method:
-				g = DBBool.Public.Override.Method(typeof(bool), "Equals").Parameter(typeof(object), "o");
+				g = DBBool.Public.Override.Method<bool>("Equals").Parameter<object>("o");
 				{
 					g.Try();
 					{
-						g.Return((g.This() == g.Arg("o").Cast(DBBool)).Cast(typeof(bool)));
+						g.Return((g.This() == g.Arg("o").Cast(DBBool)).Cast<bool>());
 					}
 					g.CatchAll();
 					{
@@ -215,13 +214,13 @@ namespace TriAxis.RunSharp.Examples
 				}
 
 				// Override the Object.GetHashCode() method:
-				g = DBBool.Public.Override.Method(typeof(int), "GetHashCode");
+				g = DBBool.Public.Override.Method<int>("GetHashCode");
 				{
 					g.Return(value);
 				}
 
 				// Override the ToString method to convert DBBool to a string:
-				g = DBBool.Public.Override.Method(typeof(string), "ToString");
+				g = DBBool.Public.Override.Method<string>("ToString");
 				{
 					g.Switch(value);
 					{
@@ -232,7 +231,7 @@ namespace TriAxis.RunSharp.Examples
 						g.Case(1);
 						g.Return("DBBool.True");
 						g.DefaultCase();
-						g.Throw(Exp.New(typeof(InvalidOperationException)));
+						g.Throw(Exp.New<InvalidOperationException>());
 					}
 					g.End();
 				}
@@ -240,7 +239,7 @@ namespace TriAxis.RunSharp.Examples
 
 			TypeGen Test = ag.Class("Test");
 			{
-				CodeGen g = Test.Static.Method(typeof(void), "Main");
+				CodeGen g = Test.Static.Void("Main");
 				{
 					Operand a = g.Local(DBBool), b = g.Local(DBBool);
 					g.Assign(a, Static.Field(DBBool, "dbTrue"));

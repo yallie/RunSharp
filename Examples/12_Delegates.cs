@@ -41,16 +41,16 @@ namespace TriAxis.RunSharp.Examples
 				// Describes a book in the book list:
 				Book = ag.Public.Struct("Book");
 				{
-					FieldGen Title = Book.Public.Field(typeof(string), "Title");	   // Title of the book.
-					FieldGen Author = Book.Public.Field(typeof(string), "Author");     // Author of the book.
-					FieldGen Price = Book.Public.Field(typeof(decimal), "Price");      // Price of the book.
-					FieldGen Paperback = Book.Public.Field(typeof(bool), "Paperback"); // Is it paperback?
+					FieldGen Title = Book.Public.Field<string>("Title");	   // Title of the book.
+					FieldGen Author = Book.Public.Field<string>("Author");     // Author of the book.
+					FieldGen Price = Book.Public.Field<decimal>("Price");      // Price of the book.
+					FieldGen Paperback = Book.Public.Field<bool>("Paperback"); // Is it paperback?
 
 					CodeGen g = Book.Public.Constructor()
-						.Parameter(typeof(string), "title")
-						.Parameter(typeof(string), "author")
-						.Parameter(typeof(decimal), "price")
-						.Parameter(typeof(bool), "paperBack");
+						.Parameter<string>("title")
+						.Parameter<string>("author")
+						.Parameter<decimal>("price")
+						.Parameter<bool>("paperBack");
 					{
 						g.Assign(Title, g.Arg("title"));
 						g.Assign(Author, g.Arg("author"));
@@ -60,27 +60,26 @@ namespace TriAxis.RunSharp.Examples
 				}
 
 				// Declare a delegate type for processing a book:
-				ProcessBookDelegate = ag.Public.Delegate(typeof(void), "ProcessBookDelegate").Parameter(Book, "book");
+				ProcessBookDelegate = ag.Public.DelegateVoid("ProcessBookDelegate").Parameter(Book, "book");
 
 				// Maintains a book database.
 				BookDB = ag.Public.Class("BookDB");
 				{
 					// List of all books in the database:
-					FieldGen list = BookDB.Field(typeof(ArrayList), "list", Exp.New(typeof(ArrayList)));
+					FieldGen list = BookDB.Field<ArrayList>("list", Exp.New<ArrayList>());
 
 					// Add a book to the database:
-					CodeGen g = BookDB.Public.Method(typeof(void), "AddBook")
-						.Parameter(typeof(string), "title")
-						.Parameter(typeof(string), "author")
-						.Parameter(typeof(decimal), "price")
-						.Parameter(typeof(bool), "paperBack")
-						;
+					CodeGen g = BookDB.Public.Void("AddBook")
+						.Parameter<string>("title")
+						.Parameter<string>("author")
+						.Parameter<decimal>("price")
+						.Parameter<bool>("paperBack");
 					{
 						g.Invoke(list, "Add", Exp.New(Book, g.Arg("title"), g.Arg("author"), g.Arg("price"), g.Arg("paperBack")));
 					}
 
 					// Call a passed-in delegate on each paperback book to process it: 
-					g = BookDB.Public.Method(typeof(void), "ProcessPaperbackBooks").Parameter(ProcessBookDelegate, "processBook");
+					g = BookDB.Public.Void("ProcessPaperbackBooks").Parameter(ProcessBookDelegate, "processBook");
 					{
 						Operand b = g.ForEach(Book, list);
 						{
@@ -101,16 +100,16 @@ namespace TriAxis.RunSharp.Examples
 				// Class to total and average prices of books:
 				TypeGen PriceTotaller = ag.Class("PriceTotaller");
 				{
-					FieldGen countBooks = PriceTotaller.Field(typeof(int), "countBooks", 0);
-					FieldGen priceBooks = PriceTotaller.Field(typeof(decimal), "priceBooks", 0.0m);
+					FieldGen countBooks = PriceTotaller.Field<int>("countBooks", 0);
+					FieldGen priceBooks = PriceTotaller.Field<decimal>("priceBooks", 0.0m);
 
-					CodeGen g = PriceTotaller.Internal.Method(typeof(void), "AddBookToTotal").Parameter(Book, "book");
+					CodeGen g = PriceTotaller.Internal.Void("AddBookToTotal").Parameter(Book, "book");
 					{
 						g.AssignAdd(countBooks, 1);
 						g.AssignAdd(priceBooks, g.Arg("book").Field("Price"));
 					}
 
-					g = PriceTotaller.Internal.Method(typeof(decimal), "AveragePrice");
+					g = PriceTotaller.Internal.Method<decimal>("AveragePrice");
 					{
 						g.Return(priceBooks / countBooks);
 					}
@@ -120,13 +119,13 @@ namespace TriAxis.RunSharp.Examples
 				TypeGen Test = ag.Class("Test");
 				{
 					// Print the title of the book.
-					CodeGen g = Test.Static.Method(typeof(void), "PrintTitle").Parameter(Book, "book");
+					CodeGen g = Test.Static.Void("PrintTitle").Parameter(Book, "book");
 					{
 						g.WriteLine("   {0}", g.Arg("book").Field("Title"));
 					}
 
 					// Initialize the book database with some test books:
-					g = Test.Static.Method(typeof(void), "AddBooks").Parameter(BookDB, "bookDB");
+					g = Test.Static.Void("AddBooks").Parameter(BookDB, "bookDB");
 					{
 						Operand bookDB = g.Arg("bookDB");
 
@@ -141,7 +140,7 @@ namespace TriAxis.RunSharp.Examples
 					}
 
 					// Execution starts here.
-					g = Test.Static.Method(typeof(void), "Main");
+					g = Test.Static.Void("Main");
 					{
 						Operand bookDB = g.Local(Exp.New(BookDB));
 
@@ -170,21 +169,21 @@ namespace TriAxis.RunSharp.Examples
 		// example based on the MSDN Delegates Sample (compose.cs)
 		public static void GenCompose(AssemblyGen ag)
 		{
-			TypeGen MyDelegate = ag.Delegate(typeof(void), "MyDelegate").Parameter(typeof(string), "string");
+			TypeGen MyDelegate = ag.DelegateVoid("MyDelegate").Parameter<string>("string");
 
 			TypeGen MyClass = ag.Class("MyClass");
 			{
-				CodeGen g = MyClass.Public.Static.Method(typeof(void), "Hello").Parameter(typeof(string), "s");
+				CodeGen g = MyClass.Public.Static.Void("Hello").Parameter<string>("s");
 				{
 					g.WriteLine("  Hello, {0}!", g.Arg("s"));
 				}
 
-				g = MyClass.Public.Static.Method(typeof(void), "Goodbye").Parameter(typeof(string), "s");
+				g = MyClass.Public.Static.Void("Goodbye").Parameter<string>("s");
 				{
 					g.WriteLine("  Goodbye, {0}!", g.Arg("s"));
 				}
 
-				g = MyClass.Public.Static.Method(typeof(void), "Main");
+				g = MyClass.Public.Static.Void("Main");
 				{
 					Operand a = g.Local(), b = g.Local(), c = g.Local(), d = g.Local();
 

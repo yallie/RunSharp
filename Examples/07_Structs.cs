@@ -37,9 +37,9 @@ namespace TriAxis.RunSharp.Examples
 
 			TypeGen SimpleStruct = ag.Struct("SimpleStruct");
 			{
-				FieldGen xval = SimpleStruct.Field(typeof(int), "xval");
+				FieldGen xval = SimpleStruct.Field<int>("xval");
 
-				PropertyGen X = SimpleStruct.Public.Property(typeof(int), "X");
+				PropertyGen X = SimpleStruct.Public.Property<int>("X");
 				{
 					X.Getter().GetCode().Return(xval);
 					g = X.Setter();
@@ -52,7 +52,7 @@ namespace TriAxis.RunSharp.Examples
 					}
 				}
 
-				g = SimpleStruct.Public.Method(typeof(void), "DisplayX");
+				g = SimpleStruct.Public.Void("DisplayX");
 				{
 					g.WriteLine("The stored value is: {0}", xval);
 				}
@@ -60,7 +60,7 @@ namespace TriAxis.RunSharp.Examples
 
 			TypeGen TestClass = ag.Class("TestClass");
 			{
-				g = TestClass.Public.Static.Method(typeof(void), "Main");
+				g = TestClass.Public.Static.Void("Main");
 				{
 					Operand ss = g.Local(SimpleStruct);
 					g.InitObj(ss);
@@ -75,27 +75,27 @@ namespace TriAxis.RunSharp.Examples
 		{
 			TypeGen TheClass = ag.Class("TheClass");
 			{
-				TheClass.Public.Field(typeof(int), "x");
+				TheClass.Public.Field<int>("x");
 			}
 
 			TypeGen TheStruct = ag.Struct("TheStruct");
 			{
-				TheStruct.Public.Field(typeof(int), "x");
+				TheStruct.Public.Field<int>("x");
 			}
 
 			TypeGen TestClass = ag.Class("TestClass");
 			{
-				CodeGen g = TestClass.Public.Static.Method(typeof(void), "structtaker").Parameter(TheStruct, "s");
+				CodeGen g = TestClass.Public.Static.Void("structtaker").Parameter(TheStruct, "s");
 				{
 					g.Assign(g.Arg("s").Field("x"), 5);
 				}
 
-				g = TestClass.Public.Static.Method(typeof(void), "classtaker").Parameter(TheClass, "c");
+				g = TestClass.Public.Static.Void("classtaker").Parameter(TheClass, "c");
 				{
 					g.Assign(g.Arg("c").Field("x"), 5);
 				}
 
-				g = TestClass.Public.Static.Method(typeof(void), "Main");
+				g = TestClass.Public.Static.Void("Main");
 				{
 					Operand a = g.Local(TheStruct);
 					g.InitObj(a);

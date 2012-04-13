@@ -34,38 +34,33 @@ namespace TriAxis.RunSharp.Examples
 		public static void GenTypeAttributeTest(AssemblyGen ag)
 		{
 			TypeGen MyAttribute = ag.Public.Class("MyAttribute", typeof(Attribute))
-				.BeginAttribute(typeof(AttributeUsageAttribute), AttributeTargets.Class).Set("AllowMultiple", true).End()
-				;
-			FieldGen testField = MyAttribute.Field(typeof(object), "testField")
-				.Attribute(typeof(DescriptionAttribute), "Test field")
-				;
-			PropertyGen testProperty = MyAttribute.Public.SimpleProperty(testField, "TestProperty")
-				.Attribute(typeof(ObsoleteAttribute), "Do not use this")
-				;
+				.BeginAttribute<AttributeUsageAttribute>(AttributeTargets.Class).Set("AllowMultiple", true).End();
 
-			testProperty.Getter().Attribute(typeof(DescriptionAttribute), "Getter method");
-			testProperty.Getter().ReturnParameter.Attribute(typeof(DescriptionAttribute), "Getter return value");
-			testProperty.Setter().Attribute(typeof(DescriptionAttribute), "Setter method");
+			FieldGen testField = MyAttribute.Field<object>("testField")
+				.Attribute<DescriptionAttribute>("Test field");
+
+			PropertyGen testProperty = MyAttribute.Public.SimpleProperty(testField, "TestProperty")
+				.Attribute<ObsoleteAttribute>("Do not use this");
+
+			testProperty.Getter().Attribute<DescriptionAttribute>("Getter method");
+			testProperty.Getter().ReturnParameter.Attribute<DescriptionAttribute>("Getter return value");
+			testProperty.Setter().Attribute<DescriptionAttribute>("Setter method");
 
 			TypeGen tg = ag.Class("Test")
 				.BeginAttribute(MyAttribute).Set("TestProperty", 3).End()
-				.Attribute(typeof(System.ComponentModel.DescriptionAttribute), "Test class")
-				;
+				.Attribute<DescriptionAttribute>("Test class");
 
-			tg.Static.Method(typeof(void), "Main")
-				.BeginAttribute(MyAttribute).Set("TestProperty", 3).End()
-				;
+			tg.Static.Void("Main")
+				.BeginAttribute(MyAttribute).Set("TestProperty", 3).End();
 
-			TypeGen SimpleDelegate = ag.Delegate(typeof(void), "SimpleDelegate")
-				.Attribute(typeof(DescriptionAttribute), "Test delegate")
-				;
+			TypeGen SimpleDelegate = ag.DelegateVoid("SimpleDelegate")
+				.Attribute<DescriptionAttribute>("Test delegate");
 
 			EventGen TestEvent = tg.Static.Event(SimpleDelegate, "TestEvent")
-				.Attribute(typeof(DescriptionAttribute), "Test event")
-				;
+				.Attribute<DescriptionAttribute>("Test event");
 
-			TestEvent.AddMethod().Attribute(typeof(DescriptionAttribute), "Event add method");
-			TestEvent.RemoveMethod().Attribute(typeof(DescriptionAttribute), "Event remove method");
+			TestEvent.AddMethod().Attribute<DescriptionAttribute>("Event add method");
+			TestEvent.RemoveMethod().Attribute<DescriptionAttribute>("Event remove method");
 		}
 	}
 }

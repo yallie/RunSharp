@@ -35,22 +35,22 @@ namespace TriAxis.RunSharp.Examples
 		{
 			TypeGen DeclareArraysSample = ag.Class("DecalreArraysSample");
 			{
-				CodeGen g = DeclareArraysSample.Public.Static.Method(typeof(void), "Main");
+				CodeGen g = DeclareArraysSample.Public.Static.Void("Main");
 				{
 					// Single-dimensional array
-					Operand numbers = g.Local(Exp.NewArray(typeof(int), 5));
+					Operand numbers = g.Local(Exp.NewArray<int>(5));
 					
 					// Multidimensional array
-					Operand names = g.Local(Exp.NewArray(typeof(string), 5, 4));
+					Operand names = g.Local(Exp.NewArray<string>(5, 4));
 					
 					// Array-of-arrays (jagged array)
-					Operand scores = g.Local(Exp.NewArray(typeof(byte[]), 5));
+					Operand scores = g.Local(Exp.NewArray<byte[]>(5));
 
 					// Create the jagged array
 					Operand i = g.Local();
 					g.For(i.Assign(0), i < scores.ArrayLength(), i.Increment());
 					{
-						g.Assign(scores[i], Exp.NewArray(typeof(byte), i + 3));
+						g.Assign(scores[i], Exp.NewArray<byte>(i + 3));
 					}
 					g.End();
 
