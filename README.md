@@ -1,8 +1,8 @@
 ﻿What's that
 ===========
 Syntactic sugar improvements for the RunSharp library.
-RunSharp is a nice user-friendly wrapper for Reflection.Emit API
-developed by Stefan Simek and Matthew Wilson.
+[RunSharp](https://code.google.com/p/runsharp/) is a nice user-friendly 
+wrapper for Reflection.Emit API developed by Stefan Simek and Matthew Wilson.
 
 Original RunSharp code:
 
